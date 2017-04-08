@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js"></script>
+
+{% endblock %}
+
+{% block title %}
+    OMG MODELS
+{% endblock %}
+
+{% block content %}
+
+    <h1>All Models</h1>
+    <canvas id="chart"></canvas>
+    <ul>
+    {% for m in models %}
+        <li>{{ m.year }} {{ m.name }}</li>
+    {% endfor %}
+    </ul>
+
+    <script>
+    var options = {};
+    
+    $.get("/models_by_year.json", makeLineChart); 
+
+    function makeLineChart(results) {
+         var years = results.years;
+         var counts = results.counts;
+         var data = {
+                labels: years,
+                datasets: [
+                    {
+                        label: "Models By Year",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "rgba(75,192,192,0.4)",
+                        borderColor: "rgba(75,192,192,1)",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: counts,
+                        spanGaps: false,
+                    }
+                ]
+            };
+
+            var ctx = $('#chart').get(0).getContext('2d');
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+    }
+
+    </script>
+
+{% endblock %}
